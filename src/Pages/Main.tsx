@@ -9,11 +9,27 @@ interface Pin {
     option: { color: string },
 }
 
+interface Lines {
+    location: Array<number[]>,
+}
+
 export function Main() {
     const [pins, setPins] = useState<Pin[]>([]);
+    const [lines, setLines] = useState<Lines>({location:[]});
 
-    function handleAddPin(values: {x: number, y: number}) {
-        setPins([...pins, {location: [values.x, values.y], option: {color: 'red'}}]);
+    function handleAddPin(values: { x: number, y: number }) {
+        const isFirstPin = pins.length === 0;
+        const insertedPin = [values.x, values.y];
+
+        setPins([...pins, {location: insertedPin, option: {color: 'red'}}]);
+
+        if (isFirstPin)
+            setLines({location: [insertedPin, insertedPin]})
+        else {
+            let newLineLocations = [...lines.location];
+            newLineLocations.splice(1, 0, insertedPin);
+            setLines({location: newLineLocations});
+        }
     }
 
     return (
@@ -28,6 +44,7 @@ export function Main() {
                     bingmapKey="Ar35sygI8qL7GUw_9hJk0fmUlmor4UTApHNA2Uq3kBrNNWJrDf2-XZ69FB6XKdub"
                     center={[13.0827, 80.2707]}
                     pushPins={pins}
+                    polyline={lines}
                 >
                 </ReactBingmaps>
             </Layout.Content>
