@@ -8,7 +8,7 @@ import {Lines} from "../Interfaces/Lines";
 
 export function Main() {
     const [pins, setPins] = useState<Pin[]>([]);
-    const [lines, setLines] = useState<Lines>({location:[]});
+    const [lines, setLines] = useState<Lines>({location: []});
 
     function handleAddPin(values: { x: number, y: number }) {
         const isFirstPin = pins.length === 0;
@@ -17,13 +17,32 @@ export function Main() {
         setPins([...pins, {location: insertedPin, option: {color: 'red'}}]);
 
         if (isFirstPin)
-            setLines({location: [insertedPin, insertedPin]})
+            setLines({location: [insertedPin]})
         else {
             let newLineLocations = [...lines.location];
             newLineLocations.splice(1, 0, insertedPin);
-            setLines({location: newLineLocations});
+            polySort(newLineLocations)
+            setLines({location: [...newLineLocations, newLineLocations[0]]});
         }
     }
+
+    // This section was copied from stack overflow, I didn't have much time left to mess with it too much :(
+    function squaredPolar(point: any, centre: any) {
+        return [
+            Math.atan2(point[1] - centre[1], point[0] - centre[0]),
+            (point[0] - centre[0]) ** 2 + (point[1] - centre[1]) ** 2
+        ];
+    }
+
+    function polySort(points: any) {
+        let centre = [points.reduce((sum: any, p: any) => sum + p[0], 0) / points.length,
+            points.reduce((sum: any, p: any) => sum + p[1], 0) / points.length];
+
+        for (let point of points) point.push(...squaredPolar(point, centre));
+        points.sort((a: any, b: any) => a[2] - b[2] || a[3] - b[3]);
+        for (let point of points) point.length -= 2;
+    }
+    // end section
 
     return (
         <Layout style={{height: '100vh'}}>
