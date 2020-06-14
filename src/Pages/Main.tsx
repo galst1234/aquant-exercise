@@ -3,15 +3,8 @@ import {ReactBingmaps} from 'react-bingmaps';
 import React, {useState} from "react";
 import {Layout} from "antd";
 import {AddPin} from "../Components/Forms/AddPin";
-
-interface Pin {
-    location: number[],
-    option: { color: string },
-}
-
-interface Lines {
-    location: Array<number[]>,
-}
+import {Pin} from "../Interfaces/Pin";
+import {Lines} from "../Interfaces/Lines";
 
 export function Main() {
     const [pins, setPins] = useState<Pin[]>([]);
